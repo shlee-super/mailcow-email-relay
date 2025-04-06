@@ -1,0 +1,43 @@
+
+version: '2.1'
+
+services:
+  email-api:
+    build: ./email-api
+    container_name: email-api
+    restart: unless-stopped
+    expose:
+      - "3000"
+
+  nginx:
+    image: nginx:latest
+    container_name: email-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/letsencrypt
+      - ./nginx/html:/var/www/html
+      - ./nginx/log:/var/log/nginx
+    depends_on:
+      - email-api
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./nginx/certs:/etc/letsencrypt
+      - ./nginx/html:/var/www/html
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 1d & wait $${!}; done'"
+
+  certbot-renew:
+    image: certbot/certbot
+    container_name: certbot-renew
+    command: sh -c "certbot renew --webroot -w /var/www/html --quiet && nginx -s reload"
+    volumes:
+      - ./nginx/certs:/etc/letsencrypt
+      - ./nginx/html:/var/www/html
+    depends_on:
+      - nginx
