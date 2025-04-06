@@ -4,7 +4,7 @@
 if [ "$#" -ne 1 ]; then
   echo "Usage: $0 <API_BASE_URL>"
   echo "Example: $0 http://localhost"
-  echo "         $0 https://smtp.class.day"
+  echo "         $0 https://smtp.superlearn.ing"
   exit 1
 fi
 
