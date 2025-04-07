@@ -1,4 +1,4 @@
-
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
@@ -8,19 +8,19 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   const token = req.headers['x-api-key'];
-  if (token !== 'furhop-2sasqo-qabpAd') { //env
+  if (token !== process.env.API_KEY) {
     return res.status(403).send({ error: 'Forbidden' });
   }
   next();
 });
 
 const transporter = nodemailer.createTransport({
-  host: 'superlearn.ing', //envß
+  host: process.env.SMTP_HOST,
   port: 465,
   secure: true,
   auth: {
-    user: 'shlee@superlearn.ing', //env
-    pass: 'Sup1059!@!'  //env
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
 });
 
@@ -32,7 +32,7 @@ app.post('/send-invoice', async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: 'Sunghyuk <shlee@superlearn.ing>',
+      from: `Sunghyuk <${process.env.SMTP_USER}>`,
       to,
       subject,
       html
