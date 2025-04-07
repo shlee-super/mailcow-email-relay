@@ -8,19 +8,19 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   const token = req.headers['x-api-key'];
-  if (token !== 'furhop-2sasqo-qabpAd') {
+  if (token !== 'furhop-2sasqo-qabpAd') { //env
     return res.status(403).send({ error: 'Forbidden' });
   }
   next();
 });
 
 const transporter = nodemailer.createTransport({
-  host: 'superlearn.ing',
+  host: 'superlearn.ing', //envß
   port: 465,
   secure: true,
   auth: {
-    user: 'shlee@superlearn.ing',
-    pass: 'Sup1059!@!'
+    user: 'shlee@superlearn.ing', //env
+    pass: 'Sup1059!@!'  //env
   }
 });
 
